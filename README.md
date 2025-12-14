@@ -16,21 +16,22 @@ Claude Code will automatically select and apply the most appropriate agent for e
 
 ## What it does and why you may need it (read this first)
 
-Let get right to the point and explain why I decided to fork these agents with custom instructions set. 
+Let me get right to the point and explain why I decided to fork these agents with custom instructions set. 
 
-By default Claude Code use agents like this: It creates Task() subprocess where agent do it's thing within it's own separate context (memory) and then prodives some kind of report which is used further. The agent's process is killed after that along with it's context and memories.
+By default Claude Code uses agents like this: It creates Task() subprocess where agent do it's thing within it's own separate context (memory) and then prodives some kind of report which is used further. The agent's process is killed after that along with it's context and memories.
 
-I find this workflow to be VERY inefficient and producing quite questionable results. 
+I find this workflow to be VERY inefficient, spending a lot of tokens and producing quite questionable results. 
 
-Actually I think this is the main reason why agents works so bad and so many users stops using them. I used these agents quite a lot myself and can confirm this with my own experience.
+Actually I think this is the main reason why agents works so bad and so many users stops using them. 
+I used these agents quite a lot myself and can confirm this with my own experience.
 
-Agents from this repository works differently: They always use the same main context (shared memory) within current session and every agent is forcibly launched inside of the current session. 
+Agents from this repository works differently: **They always use the same main context (shared memory) within current session and every agent is forcibly launched inside of the current session.**
 
-Such approach provided numerous real-world benefits: Agents can re-use each own memories and research results, they spend much less tokens, context, etc. The "pollution" problem which is usually used to justify separate processes is non-existent in my tests. 
+Such approach provided numerous real-world benefits: Agents can re-use each own memories and research results, they spend MUCH less tokens, context, etc. At the same time the "pollution" problem which is usually used to justify separate processes is non-existent in my tests (I think that's because context gets compressed long before it becomes a problem).
 
-Let me just spare the details and tell that they work MUCH better like this, rather than running as separate processes. I highly recommend everyone to try this approch and see for yourself.
+Let me just spare the details and tell that **this way agents work MUCH better**, rather than running as separate processes. I highly recommend everyone to try this approch and check the results by yourself.
 
-For best results you can combine these agents with web_search_agent I created (check neigborhood repository).
+For best results I also recommend to combine these agents with web_search_agent I created which provides much better web search rather than the one included into Claude Code by default (check neigborhood repository for that).
 
 ---
 
