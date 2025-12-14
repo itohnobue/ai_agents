@@ -1,6 +1,6 @@
 # AI Agents
 
-These AI Agents are forked version of agents from Volt repository which can be found here: https://github.com/VoltAgent/awesome-claude-code-subagents
+These AI Agents are forked version of agents from Volt repository which can be found here: https://github.com/VoltAgent/awesome-claude-code-subagents. All agents are cleaned up from Volt-specific workflow leftovers.
 
 In theory these agents are model-agnostic and can be used with any other LLM (but I am using them with Claude Code so this repository configured for such usage).
 
