@@ -2,7 +2,7 @@
 
 These AI Agents are forked version of agents from Volt repository which can be found here: https://github.com/VoltAgent/awesome-claude-code-subagents
 
-A comprehensive collection of 115 specialized agent instructions for Claude Code that dramatically improve task execution quality across software development, DevOps, data science, security, and business domains.
+In theory these agents are model-agnostic and can be used with any other LLM (but I am using them with Claude Code so this repository configured for such usage).
 
 ## Quick start (highly recommended)
 
@@ -18,13 +18,19 @@ Claude Code will automatically select and apply the most appropriate agent for e
 
 Let get right to the point and explain why I decided to fork these agents with custom instructions set. 
 
-By default Claude Code use agents like this: It creates Task() subprocess where agent do it's thing within it's own separate context (memory) and then prodives report which is used further and "clearing out" it's memory.
+By default Claude Code use agents like this: It creates Task() subprocess where agent do it's thing within it's own separate context (memory) and then prodives some kind of report which is used further. The agent's process is killed after that along with it's context and memories.
 
-I find this workflow to be very inefficient and producing quite questionable results. Actually I think this is the main reason why agents works so bad and so many users stops using them. I used these agents quite a lot myself and can confirm that with my own experience.
+I find this workflow to be VERY inefficient and producing quite questionable results. 
+
+Actually I think this is the main reason why agents works so bad and so many users stops using them. I used these agents quite a lot myself and can confirm this with my own experience.
 
 Agents from this repository works differently: They always use the same main context (shared memory) within current session and every agent is forcibly launched inside of the current session. 
 
-There are numerous benefits of such approach: Agents can re-use each own memories and research results, they spend much less tokens, context, etc. Let me just spare the details and tell that they work much better like this, rather than running as separate processes.
+Such approach provided numerous real-world benefits: Agents can re-use each own memories and research results, they spend much less tokens, context, etc. The "pollution" problem which is usually used to justify separate processes is non-existent in my tests. 
+
+Let me just spare the details and tell that they work MUCH better like this, rather than running as separate processes. I highly recommend everyone to try this approch and see for yourself.
+
+For best results you can combine these agents with web_search_agent I created (check neigborhood repository).
 
 ---
 
