@@ -10,12 +10,6 @@ Agent Naming Convention:
 - Self-documenting names indicate primary expertise
 
 IMPORTANT: Before starting any subtask you MUST select the best agent and apply it
-
-When to Skip Agent Loading:
-- Trivial tasks (< 2 minutes, single-step operations)
-- Tasks already in progress with loaded agent
-- Quick clarification questions from user
-- Simple file reads or status checks
 Always use agents for: code writing, analysis, design, debugging, testing, documentation
 DO NOT use the Task tool to spawn subprocess agents - always use in-session agent loading instead.
 Load ONLY ONE agent at a time - NEVER read multiple agent files in a single step
