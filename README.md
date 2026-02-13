@@ -17,11 +17,9 @@ Default Claude Code spawns agents as separate subprocesses with isolated memory.
 - Much lower token usage
 - Significantly better output quality
 
-Combine with [web_search_agent](https://github.com/anthropics/web_search_agent) for even better research capabilities.
-
 ## Features
 
-- **115 Specialized Agents**: Development, DevOps, security, data science, ML/AI, business
+- **109 Specialized Agents**: Development, DevOps, security, data science, ML/AI, business
 - **Automatic Selection**: Claude picks the right agent for each subtask
 - **In-Session Loading**: No subprocesses, shared context
 - **Zero Dependencies**: Pure markdown files
@@ -31,7 +29,7 @@ Combine with [web_search_agent](https://github.com/anthropics/web_search_agent) 
 | Category | Count | Examples |
 |----------|-------|----------|
 | Development | 30+ | python-pro, typescript-pro, react-pro, golang-pro |
-| DevOps & Infra | 15+ | kubernetes-specialist, terraform-specialist, cloud-architect |
+| DevOps & Infra | 15+ | kubernetes-architect, terraform-pro, cloud-architect |
 | Data & ML/AI | 10+ | data-scientist, ml-engineer, llm-architect |
 | Security & QA | 15+ | security-reviewer, penetration-tester, code-reviewer |
 | Architecture | 10+ | microservices-architect, api-designer, database-optimizer |
@@ -41,7 +39,7 @@ Combine with [web_search_agent](https://github.com/anthropics/web_search_agent) 
 <details>
 <summary>Full list of 109 agents</summary>
 
-accessibility-tester, agent-organizer, ai-engineer, angular-architect, api-designer, api-documenter, architect, backend-architect, build-error-resolver, cli-developer, cloud-architect, code-reviewer, database-reviewer, debugger, deployment-engineer, devops-engineer, devops-incident-responder, devops-troubleshooter, diagnostic-command-generator, diagnostics-gui, directus-specialist, discovery-helper, discovery-suggester, doc-updater, documentation-expert, dotnet-core-expert, dotnet-framework-4.8-expert, dx-optimizer, e2e-runner, electron-pro, embedded-systems, event-sourcing-architect, frontend-developer, full-stack-developer, golang-pro, go-build-resolver, go-reviewer, graphql-architect, hybrid-cloud-architect, incident-responder, java-architect, java-pro, javascript-pro, julia-pro, kotlin-expert, kubernetes-architect, legacy-modernizer, llm-architect, logger, master-control-gui, mermaid-expert, microservices-architect, mobile-developer, mlops-engineer, monorepo-architect, network-engineer, nextjs-pro, nlp-engineer, nx-console-gui, offline-mode-implmentor, performance-engineer, php-pro, planner, platform-engineer, playwright-test-architect, playwright-test-automater, playwright-test-data-manager, playwright-test-executor, playwright-test-framework, playwright-test-orchestrator, plugin-installer, plugin-manager, plugin-marketplace, plugin-updater, postgres-pro, prod-mode-implmentor, product-manager, project-manager, prompt-engineer, pro-plugins-installer, pro-plugins-marketplace, pro-plugins-updater, pro-updater, python-pro, python-reviewer, qa-expert, quick-run-gui, rails-expert, react-pro, refactor-cleaner, refactoring-specialist, release-note-architect, release-note-generator, rust-pro, scala-pro, script-to-plugin-migrater, security-auditor, security-reviewer, service-mesh-expert, shell-helpers-guide, spring-boot-expert, sql-pro, sre-engineer, swift-expert, tdd-guide, terraform-specialist, test-automator, tracer, tracer-ui, typescript-pro, ui-designer, ux-designer, vector-database-engineer, vue-specialist
+agent-organizer, ai-engineer, api-designer, api-documenter, architect, backend-architect, backend-security-coder, bash-pro, build-error-resolver, build-engineer, c-pro, cli-developer, cloud-architect, code-reviewer, cpp-pro, csharp-pro, data-engineer, data-researcher, data-scientist, database-architect, database-optimizer, database-reviewer, debugger, deployment-engineer, design-system-architect, devops-engineer, devops-incident-responder, devops-troubleshooter, django-pro, docs-architect, doc-updater, documentation-pro, dotnet-core-pro, dotnet-framework-pro, dx-optimizer, e2e-runner, electron-pro, elixir-pro, event-sourcing-architect, fastapi-pro, flutter-pro, frontend-developer, frontend-security-coder, full-stack-developer, golang-pro, go-build-resolver, go-reviewer, graphql-architect, haskell-pro, hybrid-cloud-architect, incident-responder, ios-pro, java-pro, javascript-pro, julia-pro, kotlin-pro, kubernetes-architect, legacy-modernizer, llm-architect, mcp-developer, mermaid-pro, microservices-architect, mlops-engineer, mobile-developer, mobile-security-coder, monorepo-architect, network-engineer, nextjs-pro, observability-engineer, penetration-tester, performance-engineer, php-pro, planner, platform-engineer, posix-shell-pro, postgres-pro, product-manager, prompt-engineer, python-pro, python-reviewer, qa-pro, rails-pro, react-pro, refactor-cleaner, research-analyst, ruby-pro, rust-pro, scala-pro, security-reviewer, service-mesh-pro, sre-engineer, spring-boot-pro, swift-pro, tdd-guide, terraform-pro, test-automator, threat-modeling-pro, tutorial-engineer, typescript-pro, ui-designer, ux-designer, vector-database-engineer, vue-pro, websocket-engineer, wordpress-master
 
 </details>
 

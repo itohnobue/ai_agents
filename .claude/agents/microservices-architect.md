@@ -69,28 +69,8 @@ class ServiceDecomposer {
 
   analyzeCoupling(): Map<string, string[]> {
     const couplingMap = new Map<string, string[]>();
-
-    for (const [serviceName, service] of this.services.entries()) {
-      const coupledServices: string[] = [];
-
-      for (const [otherName, other] of this.services.entries()) {
-        if (serviceName !== otherName &&
-            service.boundedContext === other.boundedContext &&
-            this.anyDependency(service, other)) {
-          coupledServices.push(otherName);
-        }
-      }
-
-      couplingMap.set(serviceName, coupledServices);
-    }
-
+    // Analysis logic
     return couplingMap;
-  }
-
-  private anyDependency(service: ServiceCapability, other: ServiceCapability): boolean {
-    return service.dependencies.some(dep =>
-      other.dataEntities.includes(dep)
-    );
   }
 }
 
@@ -143,18 +123,6 @@ interface DomainEvent {
   version: number;
 }
 
-// Event store interface
-interface EventStore {
-  saveEvents(events: DomainEvent[]): Promise<void>;
-  getEvents(aggregateId: string): Promise<DomainEvent[]>;
-}
-
-// Event bus interface
-interface EventBus {
-  publish(event: DomainEvent): Promise<void>;
-  subscribe(eventType: string, handler: (event: DomainEvent) => void): void;
-}
-
 // Order aggregate with event sourcing
 class OrderAggregate {
   private uncommittedEvents: DomainEvent[] = [];
@@ -169,21 +137,12 @@ class OrderAggregate {
   addItem(productId: string, quantity: number, price: number): void {
     this.items.push({ productId, quantity, price });
     this.total += quantity * price;
-
-    this.emitEvent('OrderItemAdded', {
-      productId,
-      quantity,
-      price
-    });
+    this.emitEvent('OrderItemAdded', { productId, quantity, price });
   }
 
   confirmOrder(): void {
     this.status = 'confirmed';
-
-    this.emitEvent('OrderConfirmed', {
-      total: this.total,
-      items: this.items
-    });
+    this.emitEvent('OrderConfirmed', { total: this.total, items: this.items });
   }
 
   private emitEvent(eventType: string, eventData: Record<string, unknown>): void {
@@ -196,7 +155,6 @@ class OrderAggregate {
       timestamp: new Date(),
       version: this.uncommittedEvents.length + 1
     };
-
     this.uncommittedEvents.push(event);
   }
 
@@ -206,17 +164,6 @@ class OrderAggregate {
 
   markEventsAsCommitted(): void {
     this.uncommittedEvents = [];
-  }
-}
-
-// Event handlers for integration
-class InventoryEventHandler {
-  async handle(event: DomainEvent): Promise<void> {
-    if (event.eventType === 'OrderItemAdded') {
-      console.log(`Inventory: Reserve ${event.eventData['quantity']} units of ${event.eventData['productId']}`);
-    } else if (event.eventType === 'OrderConfirmed') {
-      console.log(`Inventory: Commit reservation for order ${event.aggregateId}`);
-    }
   }
 }
 ```
@@ -261,9 +208,7 @@ class SagaOrchestrator {
   private status: SagaStatus = SagaStatus.STARTED;
   private completedSteps = 0;
 
-  constructor(
-    private steps: SagaStep[]
-  ) {
+  constructor(private steps: SagaStep[]) {
     this.sagaId = crypto.randomUUID();
   }
 
@@ -274,53 +219,26 @@ class SagaOrchestrator {
       for (let i = 0; i < this.steps.length; i++) {
         context = await this.steps[i].execute(context);
         this.completedSteps = i + 1;
-        console.log(`Saga ${this.sagaId}: Completed step ${i + 1}`);
       }
-
       this.status = SagaStatus.COMPLETED;
       return context;
-
     } catch (error) {
-      console.error(`Saga ${this.sagaId}: Failed at step ${this.completedSteps + 1}: ${error}`);
       this.status = SagaStatus.COMPENSATING;
-
       await this.compensate(context);
-
       this.status = SagaStatus.FAILED;
       throw error;
     }
   }
 
   private async compensate(context: SagaContext): Promise<void> {
-    console.log(`Saga ${this.sagaId}: Starting compensation`);
-
     // Compensate in reverse order
     for (let i = this.completedSteps - 1; i >= 0; i--) {
       try {
         await this.steps[i].compensate(context);
-        console.log(`Saga ${this.sagaId}: Compensated step ${i + 1}`);
       } catch (error) {
-        console.error(`Saga ${this.sagaId}: Compensation failed for step ${i + 1}: ${error}`);
+        console.error(`Compensation failed for step ${i + 1}: ${error}`);
       }
     }
-  }
-}
-
-// Example saga steps
-class ReserveInventoryStep implements SagaStep {
-  async execute(context: SagaContext): Promise<SagaContext> {
-    console.log(`Reserving inventory for order ${context.orderId}`);
-    const reservationId = `res-${context.orderId}`;
-    context.reservationId = reservationId;
-    return context;
-  }
-
-  async compensate(context: SagaContext): Promise<SagaContext> {
-    const reservationId = context.reservationId as string;
-    if (reservationId) {
-      console.log(`Releasing inventory reservation ${reservationId}`);
-    }
-    return context;
   }
 }
 ```
@@ -330,7 +248,6 @@ class ReserveInventoryStep implements SagaStep {
 - Long-running sagas: Consider timeout and manual intervention
 - Forgetting saga state: Persist state for crash recovery
 - No monitoring: Sagas need visibility for troubleshooting
-- Parallel step conflicts: Design for concurrent execution safety
 
 ### Resilience Patterns
 
@@ -349,12 +266,6 @@ enum CircuitState {
   CLOSED = 'closed',
   OPEN = 'open',
   HALF_OPEN = 'half_open'
-}
-
-interface CircuitBreakerConfig {
-  failureThreshold: number;
-  timeout: number; // seconds
-  expectedException: Error;
 }
 
 class CircuitBreaker {
@@ -389,7 +300,7 @@ class CircuitBreaker {
   private onSuccess(): void {
     if (this.state === CircuitState.HALF_OPEN) {
       this.successCount++;
-      if (this.successCount >= 2) { // Require 2 successes to close
+      if (this.successCount >= 2) {
         this.state = CircuitState.CLOSED;
         this.failureCount = 0;
       }
@@ -401,31 +312,9 @@ class CircuitBreaker {
   private onFailure(): void {
     this.failureCount++;
     this.lastFailureTime = Date.now();
-
     if (this.failureCount >= this.config.failureThreshold) {
       this.state = CircuitState.OPEN;
     }
-  }
-}
-
-// Usage
-class ExternalServiceClient {
-  private circuitBreaker = new CircuitBreaker({
-    failureThreshold: 5,
-    timeout: 30,
-    expectedException: ServiceUnavailableError
-  });
-
-  async callExternalService(data: string): Promise<string> {
-    return this.circuitBreaker.call(() => this.makeApiCall(data));
-  }
-
-  private async makeApiCall(data: string): Promise<string> {
-    // Simulate external service call
-    if (Math.random() < 0.3) { // 30% failure rate
-      throw new Error('External service unavailable');
-    }
-    return `Response for ${data}`;
   }
 }
 ```
@@ -459,65 +348,12 @@ class ServiceRegistry {
     instance.serviceId = crypto.randomUUID();
     instance.lastHeartbeat = new Date();
     this.services.set(instance.serviceId, instance);
-
-    console.log(`Registered service ${instance.serviceName} with ID ${instance.serviceId}`);
     return instance.serviceId;
   }
 
-  deregisterService(serviceId: string): void {
-    const instance = this.services.get(serviceId);
-    if (instance) {
-      this.services.delete(serviceId);
-      console.log(`Deregistered service ${serviceId}`);
-    }
-  }
-
-  heartbeat(serviceId: string): void {
-    const instance = this.services.get(serviceId);
-    if (instance) {
-      instance.lastHeartbeat = new Date();
-    }
-  }
-
   discoverServices(serviceName: string): ServiceInstance[] {
-    const serviceIds = Array.from(this.services.values())
-      .filter(s => s.serviceName === serviceName)
-      .map(s => s.serviceId);
-
-    const healthyServices: ServiceInstance[] = [];
-
-    for (const serviceId of serviceIds) {
-      const instance = this.services.get(serviceId);
-      if (instance && instance.isHealthy()) {
-        healthyServices.push(instance);
-      }
-    }
-
-    return healthyServices;
-  }
-}
-
-class LoadBalancer {
-  private roundRobinCounters = new Map<string, number>();
-
-  constructor(private serviceRegistry: ServiceRegistry) {}
-
-  getServiceInstance(serviceName: string): ServiceInstance | null {
-    const instances = this.serviceRegistry.discoverServices(serviceName);
-
-    if (!instances.length) {
-      return null;
-    }
-
-    // Round-robin load balancing
-    if (!this.roundRobinCounters.has(serviceName)) {
-      this.roundRobinCounters.set(serviceName, 0);
-    }
-
-    const index = this.roundRobinCounters.get(serviceName)! % instances.length;
-    this.roundRobinCounters.set(serviceName, index + 1);
-
-    return instances[index];
+    return Array.from(this.services.values())
+      .filter(s => s.serviceName === serviceName && s.isHealthy());
   }
 }
 ```
@@ -565,27 +401,13 @@ class APIGateway {
       }
     }
 
-    // Service discovery and routing
+    // Forward to service
     const serviceInstance = this.serviceRegistry.discoverServices(route.serviceName)[0];
     if (!serviceInstance) {
       return this.errorResponse(503, 'Service unavailable');
     }
 
-    // Forward request (simplified)
-    return {
-      status: 200,
-      data: {
-        message: `Forwarded to ${serviceInstance.host}:${serviceInstance.port}${route.servicePath}`,
-        user: authResult.user
-      }
-    };
-  }
-
-  private errorResponse(status: number, message: string): Response {
-    return {
-      status,
-      error: message
-    };
+    return { status: 200, data: `Forwarded to ${serviceInstance.host}:${serviceInstance.port}` };
   }
 }
 ```
@@ -601,10 +423,6 @@ interface HealthCheck {
 class HealthChecker {
   private checks = new Map<string, HealthCheck>();
 
-  addCheck(name: string, checkFunc: () => Promise<boolean | Record<string, unknown>>): void {
-    this.checks.set(name, { name, check: checkFunc });
-  }
-
   async getHealthStatus(): Promise<HealthStatus> {
     const results = new Map<string, HealthCheckResult>();
     let overallHealthy = true;
@@ -612,15 +430,9 @@ class HealthChecker {
     for (const [name, check] of this.checks.entries()) {
       try {
         const result = await check.check();
-        results.set(name, {
-          status: 'healthy' as const,
-          details: typeof result === 'object' ? result : {}
-        });
+        results.set(name, { status: 'healthy', details: result });
       } catch (error) {
-        results.set(name, {
-          status: 'unhealthy' as const,
-          error: String(error)
-        });
+        results.set(name, { status: 'unhealthy', error: String(error) });
         overallHealthy = false;
       }
     }

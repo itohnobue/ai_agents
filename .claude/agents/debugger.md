@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research debugging techniques, error patterns, tool documentation, framework-specific issues
 - sequential-thinking: Systematic debugging processes, root cause analysis workflows, issue investigation
 
+## Trigger Conditions
+
+Load this agent when:
+- Debugging errors, test failures, or unexpected behavior
+- Analyzing stack traces or error logs
+- Investigating performance issues or race conditions
+- Fixing bugs or defects in production code
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check error logs: `Grep pattern: "(ERROR|FATAL|exception|failed|timeout)" --type log,txt,yml,yaml to find error patterns
+2. Check for recent changes: `Bash "git log --oneline -10"` to identify recent code changes
+3. Identify error types: `Grep pattern: "(undefined|null|reference error|type error|assertion)" --type all to assess error categories
+4. Check test failures: `Bash "npm test 2>&1"` or equivalent to collect test failure data
+5. Verify stack traces: `Grep pattern: "(at |stack|trace|frame)" --type log,txt to analyze error locations
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.
@@ -95,3 +112,286 @@ For each debugging task, you must provide a detailed report in the following for
 - **Focus on the Underlying Issue:** Do not just treat the symptoms. Ensure your fix addresses the root cause.
 - **No New Features:** Your objective is to debug and fix, not to add new functionality.
 - **Clarity and Precision:** All explanations and code must be clear, precise, and easy for a developer to understand.
+
+## Patterns & Examples
+
+### Systematic Stack Trace Analysis
+
+```python
+# Example stack trace analysis
+"""
+Traceback (most recent call last):
+  File "/app/api.py", line 45, in get_user
+    user = db.query(User).filter_by(id=user_id).first()
+  File "/lib/database.py", line 78, in filter_by
+    return self.session.query(self.model).filter(...)
+AttributeError: 'NoneType' object has no attribute 'filter_by'
+"""
+
+# Analysis process:
+# 1. Identify the error: AttributeError on None
+# 2. Trace back: Error at /app/api.py:45 calling db.query(User).filter_by(...)
+# 3. Root cause: db.query(User) returned None, not a query object
+# 4. Investigate: Why would db.query return None?
+#    - Database not connected?
+#    - db object not initialized?
+#    - Method signature mismatch?
+
+# Fix investigation:
+# GOOD: Check db initialization
+if db is None:
+    raise RuntimeError("Database not initialized")
+
+# Verify connection before querying
+try:
+    db.ping()
+except DatabaseError:
+    db.connect()
+```
+
+```python
+# BAD: Fixing symptoms without understanding root cause
+def get_user(user_id):
+    try:
+        user = db.query(User).filter_by(id=user_id).first()
+    except AttributeError:
+        return None  # Silently ignores the real problem
+# This masks the underlying issue and makes debugging harder
+```
+
+### Debugging with Strategic Logging
+
+```python
+# GOOD: Structured logging with context
+import logging
+
+logger = logging.getLogger(__name__)
+
+def process_order(order_id):
+    logger.info("Processing order", extra={
+        "order_id": order_id,
+        "timestamp": datetime.utcnow().isoformat()
+    })
+
+    order = get_order(order_id)
+    logger.debug("Order retrieved", extra={
+        "order_id": order_id,
+        "status": order.status,
+        "items_count": len(order.items)
+    })
+
+    if not order:
+        logger.warning("Order not found", extra={"order_id": order_id})
+        return None
+
+    try:
+        validate_order(order)
+    except ValidationError as e:
+        logger.error("Order validation failed", extra={
+            "order_id": order_id,
+            "validation_error": str(e)
+        })
+        raise
+
+    result = charge_payment(order)
+    logger.info("Payment processed", extra={
+        "order_id": order_id,
+        "payment_id": result.id,
+        "amount": result.amount
+    })
+
+    return result
+```
+
+```python
+# BAD: Random print statements without structure
+def process_order(order_id):
+    print("Processing order...")  # No context, no timestamp
+    order = get_order(order_id)
+    print("Got order:", order)  # Unstructured, hard to parse
+    try:
+        validate_order(order)
+    except:
+        print("Validation failed!")  # No error details
+        raise
+    return charge_payment(order)
+# Difficult to debug in production, no log levels
+```
+
+### Debugging Flaky Tests
+
+```javascript
+// GOOD: Fixing flaky async test with proper cleanup
+describe('User API', () => {
+  let server;
+  let db;
+
+  beforeEach(async () => {
+    // Use fresh database for each test
+    db = await createTestDatabase();
+    await db.migrate();
+
+    // Start server with unique port per test
+    server = await startTestServer({
+      port: 0, // Get random available port
+      database: db
+    });
+  });
+
+  afterEach(async () => {
+    // Ensure proper cleanup order
+    await server.close();
+    await db.disconnect();
+  });
+
+  it('should create user', async () => {
+    const response = await fetch(server.url + '/users', {
+      method: 'POST',
+      body: JSON.stringify({ name: 'Alice' })
+    });
+
+    expect(response.status).toBe(201);
+    const data = await response.json();
+    expect(data.name).toBe('Alice');
+  });
+});
+```
+
+```javascript
+// BAD: Flaky test with shared state and timing issues
+let server;
+let db;
+
+beforeAll(async () => {
+  // Shared database - tests can interfere with each other
+  db = await connectToDatabase();
+  server = await startServer();
+});
+
+it('should create user', async () => {
+  const response = await fetch(server.url + '/users', {
+    method: 'POST',
+    body: JSON.stringify({ name: 'Alice' })
+  });
+
+  expect(response.status).toBe(201);
+  // Race condition: previous test might have left data
+  expect((await response.json()).name).toBe('Alice');
+});
+// No cleanup, tests depend on execution order
+```
+
+### Memory Leak Investigation
+
+```javascript
+// GOOD: Identifying and fixing memory leaks
+class DataManager {
+  constructor() {
+    this.data = new Map();
+    this.listeners = [];
+  }
+
+  addData(key, value) {
+    this.data.set(key, value);
+  }
+
+  onChange(callback) {
+    this.listeners.push(callback);
+  }
+
+  destroy() {
+    // CRITICAL: Clean up all references
+    this.data.clear();
+    this.listeners = [];
+  }
+}
+
+// Usage with proper cleanup
+const manager = new DataManager();
+window.addEventListener('beforeunload', () => {
+  manager.destroy(); // Prevent memory leak
+});
+```
+
+```javascript
+// BAD: Memory leak with unclosed intervals
+class DataManager {
+  constructor() {
+    this.data = new Map();
+  }
+
+  startMonitoring() {
+    setInterval(() => {
+      this.checkData();
+    }, 5000); // Interval never cleared
+  }
+
+  // No destroy() method - no cleanup
+}
+```
+
+### Anti-Patterns
+
+```python
+# BAD: Silencing errors
+def process_data(data):
+    try:
+        result = complex_calculation(data)
+    except Exception:
+        return None  # Error swallowed, debugging impossible
+
+# GOOD: Re-raise with context
+def process_data(data):
+    try:
+        result = complex_calculation(data)
+    except Exception as e:
+        logger.error("Calculation failed", extra={"error": str(e), "data": data})
+        raise  # Preserve stack trace for debugging
+```
+
+```python
+# BAD: Assuming without verifying
+def get_user(user_id):
+    user = db.query(User).get(user_id)
+    # Assumption: user always exists
+    return user.email  # AttributeError if user is None
+
+# GOOD: Explicit check with informative error
+def get_user(user_id):
+    user = db.query(User).get(user_id)
+    if not user:
+        raise ValueError(f"User not found: {user_id}")
+    return user.email
+```
+
+```javascript
+// BAD: Console.log debugging in production
+function processOrder(order) {
+  console.log(order); // Debug statement left in code
+  return calculateTotal(order);
+}
+
+// GOOD: Remove debug logs before commit
+function processOrder(order) {
+  logger.debug("Processing order", { orderId: order.id });
+  return calculateTotal(order);
+}
+```
+
+## Quality Checklist
+
+- [ ] Root cause is identified with supporting evidence
+- [ ] Fix addresses root cause, not just symptoms
+- [ ] Code change is minimal and focused
+- [ ] Similar issues are searched for in codebase
+- [ ] Edge cases are considered and tested
+- [ ] Error messages are clear and actionable
+- [ ] Logging/debugging code is cleaned up after fix
+- [ ] Side effects of fix are considered
+- [ ] Tests are added to prevent regression
+- [ ] Documentation is updated if needed
+- [ ] Time-dependent tests are fixed or isolated
+- [ ] Shared state issues in tests are resolved
+- [ ] Resource cleanup is verified (connections, files, memory)
+- [ ] Performance impact of fix is considered
+- [ ] Security implications of fix are reviewed

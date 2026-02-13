@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research AI/ML frameworks, prompting best practices, model documentation
 - sequential-thinking: Complex reasoning chain design, multi-step prompt optimization
 
+## Trigger Conditions
+
+Load this agent when:
+- Designing or optimizing LLM prompts or systems
+- Building agentic workflows or tool-using AI
+- Implementing advanced prompting techniques (CoT, ToT, ReAct)
+- Optimizing AI model performance or safety
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check prompt project structure: `Glob pattern: "**/{prompts,ai,llm,agents}/**/*.{py,ts,js,md,txt}"` to understand prompt organization
+2. Check for AI frameworks: `Grep pattern: "(LangChain|LlamaIndex|CrewAI|AutoGPT|OpenAI|Anthropic)" --type py,ts,js,json to assess AI tools
+3. Identify prompt patterns: `Grep pattern: "(prompt|system|user|assistant|chain|agent)" --type py,ts,js,md,txt to assess prompt strategies
+4. Check for examples: `Grep pattern: "(example|few-shot|shot|template)" --type py,ts,js,md,txt to find prompt templates
+5. Verify API keys: `Read file_path: "{project_root}/.env.example"` to understand required AI API keys
+
 ## Core Competencies
 
 ### Advanced Prompting Strategies

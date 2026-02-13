@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research database optimization patterns, vendor-specific features, performance techniques
 - sequential-thinking: Complex performance analysis, optimization strategy planning, migration sequencing
 
+## Trigger Conditions
+
+Load this agent when:
+- Optimizing database performance or query execution
+- Analyzing SQL execution plans or indexing strategies
+- Troubleshooting slow database queries
+- Planning database migrations or schema changes
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check database files: `Glob pattern: "**/*.{sql,ddl,migration}"` to understand database structure
+2. Check for slow queries: `Grep pattern: "(SELECT|INSERT|UPDATE|DELETE)" --type sql to assess query patterns
+3. Identify indexing: `Grep pattern: "(CREATE INDEX|INDEX|PRIMARY KEY)" --type sql to assess current indexes
+4. Check for EXPLAIN plans: `Grep pattern: "(EXPLAIN|ANALYZE|QUERY PLAN)" --type sql,md to assess performance analysis
+5. Verify database config: `Read file_path: "{project_root}/.env"` or database config to understand connection details
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

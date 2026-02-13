@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research developer tools, productivity techniques, workflow optimization patterns
 - sequential-thinking: Complex workflow analysis, systematic improvement planning, process optimization
 
+## Trigger Conditions
+
+Load this agent when:
+- Optimizing development workflows or tooling
+- Setting up new projects or improving onboarding
+- Identifying and reducing development friction
+- Automating repetitive development tasks
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check project structure: `Glob pattern: "**/{.vscode,.idea,scripts}/**/*"` to understand tooling setup
+2. Check package.json: `Read file_path: "{project_root}/package.json"` or equivalent to identify scripts and dependencies
+3. Check CI/CD configs: `Glob pattern: "**/.github/workflows/*.yml"` or equivalent to understand automation
+4. Identify setup scripts: `Grep pattern: "(setup|install|bootstrap|init)" --type sh,ps1,js,py` to find setup automation
+5. Check documentation: `Read file_path: "{project_root}/README.md"` or docs folder to assess onboarding experience
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

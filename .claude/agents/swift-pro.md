@@ -41,7 +41,7 @@ When loaded, immediately:
 | Animation-heavy | Yes | Yes | Yes |
 | Existing UIKit codebase | No | Yes | Yes |
 | macOS/watchOS/tvOS | Yes | Yes | Yes |
-| Declinative UI preference | Yes | No | No |
+| Declarative UI preference | Yes | No | No |
 
 **SwiftUI Best Practices:**
 - Use `@State` for local component state
@@ -112,7 +112,7 @@ actor DataManager {
 func monitorUpdates() -> AsyncStream<Int> {
     AsyncStream { continuation in
         let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            continuation.yield(Int(Date().timeIntervalSince1970))
+            continuation.yielding(Int(Date().timeIntervalSince1970))
         }
 
         continuation.onTermination = { @Sendable _ in
@@ -168,21 +168,6 @@ class PersistentContainer {
 
     var context: NSManagedObjectContext {
         container.viewContext
-    }
-}
-
-// Async fetch with Swift modern concurrency
-extension NSManagedObjectContext {
-    func fetch<T: NSManagedObject>(
-        entity: T.Type,
-        predicate: NSPredicate? = nil
-    ) async throws -> [T] {
-        let request = NSFetchRequest<T>(entityName: String(describing: entity))
-        request.predicate = predicate
-
-        return try await self.perform {
-            try self.fetch(request)
-        }
     }
 }
 ```
@@ -285,19 +270,6 @@ class UserProfileViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isLoading)
         XCTAssertNil(sut.error)
     }
-
-    func testLoadUser_Failure() async throws {
-        // Given
-        mockService.shouldFail = true
-
-        // When
-        await sut.loadUser(userId: "1")
-
-        // Then
-        XCTAssertNil(sut.user)
-        XCTAssertNotNil(sut.error)
-        XCTAssertFalse(sut.isLoading)
-    }
 }
 ```
 
@@ -306,61 +278,6 @@ class UserProfileViewModelTests: XCTestCase {
 - Testing implementation: Test behavior, not internal details
 - Fragile UI tests: Use accessibility identifiers
 - Forgetting cleanup: tearDown must reset state
-
-### Performance Optimization
-
-| Technique | Impact | Implementation |
-|-----------|--------|----------------|
-| Lazy loading | 30-50% faster launch | `lazy` properties, `@State` deferred |
-| Image optimization | 40-60% less memory | Image preparation, caching |
-| Background processing | 20-40% smoother UI | `async let`, Task priorities |
-| Instrumentation use | Identify bottlenecks | Instruments Time Profiler |
-
-**Optimization Pattern:**
-
-```swift
-// Lazy grid for large lists
-struct LazyGridView: View {
-    let items: [Item]
-
-    var body: some View {
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
-                ForEach(items) { item in
-                    ItemCell(item: item)
-                }
-            }
-        }
-    }
-}
-
-// Image caching with async
-actor ImageCache {
-    static let shared = ImageCache()
-    private var cache: [URL: Image] = [:]
-
-    func image(for url: URL) async -> Image? {
-        if let cached = cache[url] {
-            return cached
-        }
-
-        guard let data = try? await URLSession.shared.data(from: url).0,
-              let uiImage = UIImage(data: data) else {
-            return nil
-        }
-
-        let image = Image(uiImage: uiImage)
-        cache[url] = image
-        return image
-    }
-}
-```
-
-**Pitfalls to Avoid:**
-- Premature optimization: Measure before optimizing
-- Not using Instruments: Guesswork wastes time
-- Ignoring memory leaks: Use Leaks instrument
-- Over-caching: Cache invalidation is complex
 
 ## Patterns & Examples
 
@@ -459,17 +376,6 @@ struct UserView: View {
 
     var body: some View {
         // Uses injected service
-    }
-}
-
-// App-level setup
-@main
-struct App: App {
-    var body: some Scene {
-        WindowGroup {
-            UserView()
-                .environment(\.userService, ProductionUserService())
-        }
     }
 }
 ```

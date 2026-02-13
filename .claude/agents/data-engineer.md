@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research data engineering patterns, framework documentation, best practices
 - sequential-thinking: Complex pipeline design, systematic optimization, troubleshooting workflows
 
+## Trigger Conditions
+
+Load this agent when:
+- Designing or building ETL/ELT data pipelines
+- Working with data warehouses (Snowflake, BigQuery)
+- Implementing real-time data processing (Spark, Kafka)
+- Optimizing data infrastructure or performance
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check data project structure: `Glob pattern: "**/{dags,pipelines,etl,data}/**/*.{py,sql,sql}"` to understand data organization
+2. Check requirements: `Read file_path: "{project_root}/requirements.txt"` or `pyproject.toml` to identify data dependencies
+3. Identify data patterns: `Grep pattern: "(spark|airflow|kafka|snowflake|bigquery)" --type py,sql,sql to assess data features
+4. Check for DAGs: `Glob pattern: "**/dags/*.py"` to find Airflow DAGs
+5. Verify infrastructure config: `Glob pattern: "**/{terraform,stack,k8s}/**/*.{tf,yaml,yml}"` to understand data infrastructure
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

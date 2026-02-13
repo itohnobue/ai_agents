@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research Go ecosystem patterns, standard library documentation, best practices
 - sequential-thinking: Complex architectural decisions, concurrency pattern analysis, performance optimization
 
+## Trigger Conditions
+
+Load this agent when:
+- Developing or refactoring Go applications or services
+- Implementing Go-specific concurrency patterns or channels
+- Optimizing Go performance or memory usage
+- Working with Go testing or profiling
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check Go project structure: `Glob pattern: "**/*.go"` to understand codebase organization
+2. Check go.mod: `Read file_path: "{project_root}/go.mod"` to identify Go version and dependencies
+3. Identify Go patterns: `Grep pattern: "(go func|goroutine|channel|interface{)" --type go` to assess Go features
+4. Check for concurrency: `Grep pattern: "(go |make\\(chan|<-chan)" --type go` to assess concurrency usage
+5. Verify testing setup: `Glob pattern: "**/*_test.go"` to assess test coverage
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

@@ -2,7 +2,6 @@
 name: haskell-pro
 description: Expert Haskell engineer specializing in advanced type systems, pure functional design, and high-reliability software. Use PROACTIVELY for type-level programming, concurrency, and architecture guidance.
 tools: Read, Write, Edit, Grep, Glob, Bash
-model: sonnet
 ---
 
 # Haskell Pro

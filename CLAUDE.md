@@ -75,31 +75,29 @@ Examples of subtasks which MUST use in-session agent instructions:
 **Development & Code:**
 - Python code changes → python-pro.md
 - JavaScript/TypeScript code → javascript-pro.md or typescript-pro.md
-- React development → react-specialist.md
+- React development → react-pro.md
 - API design → api-designer.md or api-documenter.md
 - Database work → database-optimizer.md or postgres-pro.md
 - Debugging → debugger.md
 - Code review → code-reviewer.md
-- Refactoring → refactoring-specialist.md
 
 **Analysis & Testing:**
-- Log analysis → performance-engineer.md or data-analyst.md
+- Log analysis → performance-engineer.md or data-scientist.md
 - Performance analysis → performance-engineer.md
 - QA checks → qa-expert.md
-- Security audit → security-auditor.md or penetration-tester.md
-- Accessibility testing → accessibility-tester.md
+- Security audit → security-reviewer.md or penetration-tester.md
 
 **Architecture & Design:**
 - System design → cloud-architect.md or microservices-architect.md
-- UI/UX design → ui-designer.md or ux-researcher.md
+- UI/UX design → ui-designer.md or ux-designer.md
 - Data modeling → data-engineer.md
 
 **Infrastructure & Operations:**
 - DevOps tasks → devops-engineer.md
-- Kubernetes → kubernetes-specialist.md
+- Kubernetes → kubernetes-architect.md
 - CI/CD → deployment-engineer.md
 - Monitoring → sre-engineer.md
 
 **Documentation & Communication:**
-- Technical writing → technical-writer.md or documentation-engineer.md
+- Technical writing → technical-writer.md or documentation-pro.md
 - API documentation → api-documenter.md

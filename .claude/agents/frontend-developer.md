@@ -25,6 +25,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - playwright: E2E testing, accessibility validation, performance monitoring
 - magic: Frontend component generation, UI development patterns
 
+## Trigger Conditions
+
+Load this agent when:
+- Developing or refactoring frontend components and applications
+- Implementing UI/UX features with React or other frameworks
+- Working on frontend performance optimization or accessibility
+- Creating responsive or mobile-first designs
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check frontend structure: `Glob pattern: "**/{src,components,pages}/**/*.{jsx,tsx,js,ts}"` to understand codebase organization
+2. Check package.json: `Read file_path: "{project_root}/package.json"` to identify framework and dependencies
+3. Identify component patterns: `Grep pattern: "(useState|useEffect|export const|export default)" --type jsx,tsx` to assess component patterns
+4. Check for testing: `Grep pattern: "(describe|test|it\\()" --type js,ts,jsx,tsx` to assess test coverage
+5. Verify styling approach: `Grep pattern: "(tailwind|styled-components|css|module)" --type js,ts,jsx,tsx,css` to assess styling
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

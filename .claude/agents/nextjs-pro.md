@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research Next.js patterns, framework documentation, ecosystem libraries
 - magic: Generate Next.js components, page layouts, UI patterns optimized for SSR/SSG
 
+## Trigger Conditions
+
+Load this agent when:
+- Developing or refactoring Next.js applications
+- Implementing Next.js-specific features like App Router, SSR, or ISR
+- Optimizing Next.js performance or SEO
+- Working with Next.js API routes or middleware
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check Next.js project structure: `Glob pattern: "**/{app,pages,src}/**/*.{tsx,ts,jsx,js}"` to understand project organization
+2. Check package.json: `Read file_path: "{project_root}/package.json"` to identify Next.js version and dependencies
+3. Identify Next.js patterns: `Grep pattern: "(generateMetadata|generateStaticParams|getStaticProps|getServerSideProps)" --type ts,tsx,js,jsx` to assess features
+4. Check for API routes: `Glob pattern: "**/{app,pages}/api/**/*.{ts,tsx,js,jsx}"` to find API endpoints
+5. Verify configuration: `Read file_path: "{project_root}/next.config.{js,mjs,ts}"` to understand Next.js configuration
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

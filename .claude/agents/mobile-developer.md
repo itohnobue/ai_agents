@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research mobile development patterns, React Native/Flutter best practices, native platform APIs
 - sequential-thinking: Complex mobile architecture design, performance optimization strategies
 
+## Trigger Conditions
+
+Load this agent when:
+- Developing or refactoring mobile applications (React Native or Flutter)
+- Implementing native integrations or platform-specific features
+- Working with offline data synchronization or push notifications
+- Optimizing mobile performance or app store deployment
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check mobile project structure: `Glob pattern: "**/{ios,android,src}/**/*.{ts,tsx,js,jsx,dart,swift,kt,java}"` to understand project organization
+2. Check package.json or pubspec.yaml: `Read file_path: "{project_root}/package.json"` or `pubspec.yaml` to identify framework and dependencies
+3. Identify framework patterns: `Grep pattern: "(React Native|Flutter|StyleSheet|Scaffold|Widget)" --type ts,tsx,js,jsx,dart` to assess framework
+4. Check for native modules: `Grep pattern: "(NativeModules|@objc|@ReactNative|MethodChannel|platformChannel)" --type ts,tsx,js,jsx,dart,swift,kt,java` to find native integrations
+5. Verify app store configuration: `Glob pattern: "**/{AndroidManifest,Info,Info.plist,build.gradle}"` to understand app store setup
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

@@ -81,11 +81,6 @@ interface TokenPayload {
   exp?: number;
 }
 
-// Generate secure random token ID for revocation
-function generateTokenId(): string {
-  return crypto.randomBytes(16).toString('hex');
-}
-
 // Create JWT with short expiration
 export function createAccessToken(user: User): string {
   const payload: TokenPayload = {
@@ -124,12 +119,6 @@ export function verifyAccessToken(token: string): TokenPayload | null {
 
     return decoded as TokenPayload;
   } catch (error) {
-    // Log specific JWT errors for monitoring
-    if (error.name === 'TokenExpiredError') {
-      console.warn('Expired token used');
-    } else if (error.name === 'JsonWebTokenError') {
-      console.warn('Invalid token:', error.message);
-    }
     return null;
   }
 }
@@ -191,7 +180,7 @@ function renderUserInputSafe(input: string) {
   return `<div>${clean}</div>`;
 }
 
-// GOOD: React/Vue automatic escaping (with dangerouslySetInnerHTML avoided)
+// GOOD: React/Vue automatic escaping
 function UserInput({ input }: { input: string }) {
   return <div>{input}</div>; // Automatically escaped
 }
@@ -237,42 +226,6 @@ export async function verifyPassword(
 export function generateResetToken(): string {
   return crypto.randomBytes(32).toString('hex');
 }
-
-// Validate password strength
-export function validatePassword(password: string): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
-
-  if (password.length < 12) {
-    errors.push('Password must be at least 12 characters');
-  }
-
-  if (!/[a-z]/.test(password)) {
-    errors.push('Password must contain lowercase letters');
-  }
-
-  if (!/[A-Z]/.test(password)) {
-    errors.push('Password must contain uppercase letters');
-  }
-
-  if (!/[0-9]/.test(password)) {
-    errors.push('Password must contain numbers');
-  }
-
-  if (!/[^a-zA-Z0-9]/.test(password)) {
-    errors.push('Password must contain special characters');
-  }
-
-  // Check for common passwords
-  const commonPasswords = ['password123', 'qwerty2024', 'admin123'];
-  if (commonPasswords.includes(password.toLowerCase())) {
-    errors.push('Password is too common');
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors
-  };
-}
 ```
 
 **Pitfalls to Avoid:**
@@ -304,27 +257,6 @@ const SECRET_PATTERNS = {
   BEARER_TOKEN: /Bearer\s+[a-zA-Z0-9\-._~+/]+=*/g,
   JWT: /eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g
 };
-
-function scanForSecrets(content: string, filePath: string) {
-  const findings = [];
-
-  for (const [secretType, pattern] of Object.entries(SECRET_PATTERNS)) {
-    const matches = content.matchAll(pattern);
-    for (const match of matches) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;
-      findings.push({
-        severity: 'CRITICAL',
-        type: 'HARDCODED_SECRET',
-        secretType,
-        file: filePath,
-        line: lineNumber,
-        recommendation: 'Move to environment variable or secret manager'
-      });
-    }
-  }
-
-  return findings;
-}
 ```
 
 ### Infrastructure Security
@@ -342,13 +274,6 @@ function scanForSecrets(content: string, filePath: string) {
 **Dockerfile Security Pattern:**
 
 ```dockerfile
-# Bad: Runs as root, uses latest tag
-FROM node:latest
-WORKDIR /app
-COPY . .
-RUN npm install
-CMD ["npm", "start"]
-
 # Good: Specific version, non-root user, healthcheck
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -367,12 +292,6 @@ EXPOSE 3000
 CMD ["node", "server.js"]
 ```
 
-**Pitfalls to Avoid:**
-- Running containers as root: Exploits gain host access
-- Using `:latest` tags: Unpredictable deployments, security gaps
-- Mounting Docker socket: Complete host compromise
-- Exposing sensitive ports: SSH (22), database (3306, 5432)
-
 ### Security Testing in CI/CD
 
 | Stage | Security Tools | Frequency |
@@ -381,54 +300,6 @@ CMD ["node", "server.js"]
 | Build | SAST (Bandit, Semgrep), dependency scan | Every build |
 | Test | DAST (OWASP ZAP), SCA | Every PR/release |
 | Production | Monitoring, WAF, log analysis | Continuous |
-
-**GitHub Actions Security Workflow:**
-
-```yaml
-name: Security Scan
-
-on:
-  pull_request:
-    branches: [main, develop]
-  schedule:
-    - cron: '0 6 * * 1' # Weekly
-
-jobs:
-  security-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Run SAST
-        run: |
-          npm install -g semgrep
-          semgrep --config=auto --json --output semgrep-report.json
-
-      - name: Check dependencies
-        run: npm audit --audit-level=moderate
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload security reports
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      - name: Comment PR with results
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const report = fs.readFileSync('semgrep-report.json', 'utf8');
-            // Parse and comment on PR
-```
 
 ## Patterns & Examples
 

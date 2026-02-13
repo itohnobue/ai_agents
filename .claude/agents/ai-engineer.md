@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research AI frameworks, model documentation, best practices, safety guidelines
 - sequential-thinking: Complex AI system design, multi-step reasoning workflows, optimization strategies
 
+## Trigger Conditions
+
+Load this agent when:
+- Developing or integrating LLM-powered applications
+- Building RAG systems or vector search
+- Designing prompt engineering or agentic workflows
+- Optimizing AI/ML systems or models
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check AI project structure: `Glob pattern: "**/{ai,llm,agents,rag}/**/*.{ts,js,py}"` to understand AI code organization
+2. Check package.json or requirements: `Read file_path: "{project_root}/package.json"` or `requirements.txt` to identify AI dependencies
+3. Identify AI patterns: `Grep pattern: "(OpenAI|Anthropic|LangChain|pinecone|weaviate|vector)" --type ts,js,py to assess AI features
+4. Check for vector databases: `Grep pattern: "(embedding|vector|pinecone|weaviate|qdrant)" --type ts,js,py,json to assess vector search
+5. Verify API keys: `Read file_path: "{project_root}/.env.example"` to understand required AI API keys
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research incident response patterns, monitoring best practices, tool documentation
 - sequential-thinking: Complex incident analysis, systematic root cause investigation, post-mortem structuring
 
+## Trigger Conditions
+
+Load this agent when:
+- Responding to production incidents or outages
+- Analyzing logs or metrics for root cause
+- Implementing fixes for production issues
+- Creating post-mortem reports or runbooks
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check monitoring data: `Bash "kubectl logs --all-namespaces --tail=100"` or similar to gather logs
+2. Check for alerts: `Glob pattern: "**/{alerts,dashboards,monitoring}/**/*.{yml,yaml,json}"` to find alerting setup
+3. Identify error patterns: `Grep pattern: "(ERROR|FATAL|CRITICAL|timeout|failed)" --type log,txt,yml,yaml to assess errors
+4. Check for recent changes: `Bash "git log --oneline -10"` to identify recent deployments
+5. Verify health status: `Bash "kubectl get pods --all-namespaces"` or equivalent to check system health
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

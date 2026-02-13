@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research React ecosystem patterns, library documentation, best practices
 - magic: Generate modern React components, design system integration, UI patterns
 
+## Trigger Conditions
+
+Load this agent when:
+- Developing or refactoring React components or applications
+- Implementing React-specific features like Hooks, Context, or Suspense
+- Optimizing React performance or resolving React-specific issues
+- Working with React state management or testing
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check React project structure: `Glob pattern: "**/*.{jsx,tsx,js,ts}"` to understand codebase organization
+2. Check package.json: `Read file_path: "{project_root}/package.json"` to identify React version and dependencies
+3. Identify React patterns: `Grep pattern: "(useState|useEffect|useCallback|useMemo|useContext)" --type jsx,tsx` to assess React features
+4. Check for state management: `Grep pattern: "(createStore|configureStore|Provider|createContext)" --type js,ts,jsx,tsx` to find state management
+5. Verify React testing setup: `Read file_path: "{project_root}/package.json"` for testing libraries like jest, @testing-library/react
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

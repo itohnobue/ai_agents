@@ -70,7 +70,7 @@ info:
     Comprehensive API documentation for Project.
 
     ## Authentication
-    This API uses JWT Bearer authentication. Include the token in Authorization header.
+    This API uses JWT Bearer authentication. Include your token in Authorization header.
 
     ## Rate Limiting
     - 100 requests per minute for authenticated users
@@ -164,7 +164,7 @@ Current issue: No database selected, causing inconsistent data handling across s
 
 ## Decision
 
-Use PostgreSQL as the primary database with the following configuration:
+Use PostgreSQL as our primary database with the following configuration:
 - PostgreSQL 15+ for improved performance
 - Partitioning for large tables
 - pgvector for vector similarity search
@@ -197,11 +197,6 @@ Rejected because: Less advanced extension ecosystem than PostgreSQL
 
 ### DynamoDB
 Rejected because: Cost-prohibitive for our query patterns
-
-## References
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- [Database Scaling Guide](internal link)
-- [ADR-005: Caching Strategy](related ADR)
 ```
 
 **Pitfalls to Avoid:**
@@ -250,68 +245,6 @@ export async function createUser(
 ): Promise<CreatedUser> {
   // Implementation
 }
-```
-
-```python
-"""User account management module.
-
-This module provides functionality for user registration, authentication,
-and profile management. All operations are logged for audit purposes.
-
-Typical usage example:
-    ```python
-    from auth import UserManager
-
-    manager = UserManager(db_connection)
-    user = manager.create_user(
-        email="user@example.com",
-        password="SecurePass123!"
-    )
-    ```
-
-Attributes:
-    DEFAULT_SESSION_DURATION: Time in seconds before session expires (default: 3600)
-    MIN_PASSWORD_LENGTH: Minimum password length (default: 12)
-"""
-
-class UserManager:
-    """Manages user account lifecycle operations.
-
-    This class handles user creation, authentication, password resets,
-    and account deletion. All database operations use transactional
-    context to ensure data consistency.
-
-    Args:
-        db_connection: Active database connection object
-        email_service: Configured email service for notifications
-
-    Raises:
-        ConfigurationError: If database connection is invalid
-    """
-
-    def create_user(self, email: str, password: str) -> User:
-        """Create a new user account with email verification.
-
-        Args:
-            email: User's email address (must be unique)
-            password: User's password (min 12 characters, mixed case)
-
-        Returns:
-            Created User object with ID and verification token
-
-        Raises:
-            ValidationError: If email invalid or password too weak
-            ConflictError: If email already registered
-
-        Example:
-            ```python
-            user = manager.create_user(
-                email="user@example.com",
-                password="SecurePass123!"
-            )
-            assert user.verification_sent is True
-            ```
-        """
 ```
 
 **Pitfalls to Avoid:**
@@ -364,11 +297,6 @@ jobs:
         run: |
           npm install -g markdown-link-check
           markdown-link-check **/*.md
-
-      - name: Lint prose
-        run: |
-          npm install -g write-good
-          write-good **/*.md
 
   generate-docs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -534,26 +462,6 @@ Creates a new user account.
 **Error Responses:**
 - 400: Invalid request body
 - 409: Email already registered
-
-<!-- BAD: No examples -->
-## Usage
-
-Use the createUser function to create users.
-
-<!-- GOOD: Usage with examples -->
-## Usage
-
-\`\`\`typescript
-import { createUser } from '@username/project';
-
-const user = await createUser({
-  email: 'user@example.com',
-  password: 'SecurePass123!',
-  name: 'John Doe'
-});
-
-console.log(\`Created user: \${user.id}\`);
-\`\`\`
 ```
 
 ## Quality Checklist

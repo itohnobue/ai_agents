@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research Electron patterns, desktop development best practices, security documentation
 - sequential-thinking: Complex architecture decisions, security implementation, performance optimization
 
+## Trigger Conditions
+
+Load this agent when:
+- Developing or refactoring Electron applications
+- Implementing Electron-specific features like IPC or native integrations
+- Working with Electron security or sandboxing
+- Optimizing Electron performance or packaging
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check Electron project structure: `Glob pattern: "**/{main,preload,renderer}/**/*.{ts,js}"` to understand process separation
+2. Check package.json: `Read file_path: "{project_root}/package.json"` to identify Electron version and dependencies
+3. Identify IPC patterns: `Grep pattern: "(ipcMain|ipcRenderer|contextBridge|preload)" --type ts,js` to assess IPC usage
+4. Check security settings: `Grep pattern: "(sandbox|webSecurity|contextIsolation|nodeIntegration)" --type ts,js,json` to assess security
+5. Verify build configuration: `Read file_path: "{project_root}/electron-builder.json"` or equivalent to understand packaging setup
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

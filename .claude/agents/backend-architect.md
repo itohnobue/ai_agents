@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research framework patterns, API best practices, database design patterns
 - sequential-thinking: Complex architectural analysis, requirement gathering, trade-off evaluation
 
+## Trigger Conditions
+
+Load this agent when:
+- Designing or refactoring backend systems and architectures
+- Creating API designs or database schemas
+- Planning scalability or performance improvements
+- Making architectural decisions for backend services
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check existing architecture: `Glob pattern: "**/{api,service,controller,model}/**/*.{ts,js,py,go}"` to understand backend structure
+2. Identify API patterns: `Grep pattern: "(router|endpoint|@GetMapping|@PostMapping|def |async def )" --type ts,js,py,go` to assess API design
+3. Check database models: `Grep pattern: "(CREATE TABLE|@Entity|class |def schema)" --type sql,ts,py,go` to find data models
+4. Review configuration: `Read file_path: "{project_root}/package.json"` or equivalent to understand dependencies
+5. Identify service boundaries: `Glob pattern: "**/{service,module,lib}/**/*.{ts,js,py,go}"` to understand microservice organization
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.

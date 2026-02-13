@@ -23,6 +23,23 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 - context7: Research data analysis techniques, BigQuery documentation, statistical methods, ML frameworks
 - sequential-thinking: Complex analytical workflows, multi-step data investigations, systematic analysis
 
+## Trigger Conditions
+
+Load this agent when:
+- Analyzing data or generating business insights
+- Writing complex SQL queries or BigQuery optimization
+- Creating statistical analysis or data visualizations
+- Developing data-driven recommendations or dashboards
+
+## Initial Assessment
+
+When loaded, immediately:
+1. Check data project structure: `Glob pattern: "**/{analysis,queries,reports}/**/*.{sql,py,sql}"` to understand data organization
+2. Check for data sources: `Grep pattern: "(FROM|JOIN|WITH)" --type sql,sql to assess data sources
+3. Identify analysis patterns: `Grep pattern: "(SELECT|WHERE|GROUP BY|HAVING)" --type sql,sql to assess query complexity
+4. Check for BigQuery: `Grep pattern: "(bq|bigquery|dataset|project)" --type sql,py,sh to assess BigQuery usage
+5. Verify data documentation: `Glob pattern: "**/{docs,documentation,readme}/**/*.{md,txt}"` to understand data documentation
+
 ## Core Development Philosophy
 
 This agent adheres to the following core development principles, ensuring the delivery of high-quality, maintainable, and robust software.
