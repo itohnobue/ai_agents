@@ -116,17 +116,21 @@ When the feature is large, break it into independently deliverable phases:
 
 Each phase should be mergeable independently. Avoid plans that require all phases to complete before anything works.
 
-## Red Flags to Check
+## Anti-Patterns (in the plan itself)
 
-- Large functions (>50 lines)
-- Deep nesting (>4 levels)
-- Duplicated code
-- Missing error handling
-- Hardcoded values
-- Missing tests
-- Performance bottlenecks
-- Plans with no testing strategy
-- Steps without clear file paths
-- Phases that cannot be delivered independently
+- Steps without file paths → every step must reference specific files
+- Phases that can't be delivered independently → each phase must be mergeable on its own
+- "Refactor everything" as a step → break into specific, small refactors
+- No testing strategy → every plan needs test approach (unit, integration, E2E)
+- Unbounded scope → define what's explicitly OUT of scope
+- No risk assessment → identify at least one risk per phase with mitigation
+- Vague steps ("update the backend") → specify: which file, which function, what change
 
-**Remember**: A great plan is specific, actionable, and considers both the happy path and edge cases. The best plans enable confident, incremental implementation.
+## Completion Criteria
+
+- Every step references specific files and functions
+- Dependencies between steps are explicit
+- Each phase is independently deliverable
+- Testing strategy covers happy path + error cases
+- Risks are identified with mitigations
+- Success criteria are specific and verifiable
