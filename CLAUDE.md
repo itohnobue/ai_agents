@@ -8,7 +8,7 @@ Agents folder: `.claude/agents/`. Use agents for all non-trivial subtasks — co
 - DO NOT use the Task tool for agents — use in-session agent loading instead
 - Agent instructions are TEMPORARY — apply to current subtask only, discard after
 
-**Discovery:** Glob `.claude/agents/*.md` to list, Grep by keyword. Prefer specialized over general agents.
+**Discovery:** Consult `.claude/agents/INDEX.md` for the full agent directory (108 agents grouped by domain). Grep by keyword for specific needs. Prefer specialized over general agents.
 
 ### Request Workflow
 
