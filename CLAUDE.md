@@ -12,15 +12,13 @@ Agents folder: `.claude/agents/`. Use agents for all non-trivial subtasks — co
 
 ### Request Workflow
 
-1. **Memory:** `./.claude/tools/memory.sh context "<keywords>"` — extract from entities, technologies, services, error types. MANDATORY for non-trivial tasks
-2. **Plan:** For multi-step tasks: `memory.sh session add plan "..."`
-3. **Decompose:** List subtasks, map each to best agent, report to user
+1. **Plan:** For multi-step tasks, outline the plan before starting
+2. **Decompose:** List subtasks, map each to best agent, report to user
 
 **Agent selection:** Most specialized wins (e.g., postgres-pro over database-optimizer). Split hybrid tasks into subtasks with different agents.
 
 ### Subtask Workflow
 
 1. Read agent `.md` → apply to current subtask → complete fully → verify quality
-2. Save discoveries to knowledge if non-trivial
-3. Discard agent instructions → next subtask
+2. Discard agent instructions → next subtask
 4. After all subtasks: compose into one report
